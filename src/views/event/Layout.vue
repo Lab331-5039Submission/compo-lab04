@@ -32,7 +32,16 @@ export default {
       .then((res) => {
         this.event = res.data
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        if (err.res && err.res.status == 404) {
+          this.$router.push({
+            name: '404Resource',
+            params: { resource: 'event' }
+          })
+        } else {
+          this.$router.push({ name: 'NetworkError' })
+        }
+      })
   }
 }
 </script>
