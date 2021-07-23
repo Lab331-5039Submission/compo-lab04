@@ -1,10 +1,10 @@
 <template>
   <h1>Events For Good</h1>
-  <select v-model.number="size">
+  <!-- <select v-model.number="size">
     <option v-for="num in index" :key="num">
       {{ num }}
     </option>
-  </select>
+  </select> -->
   <div class="events">
     <EventCard v-for="event in events" :key="event.id" :event="event" />
     <div class="pagination">
@@ -41,6 +41,10 @@ export default {
     page: {
       type: Number,
       required: true
+    },
+    perPage: {
+      type: Number,
+      required: true
     }
   },
   components: {
@@ -50,13 +54,12 @@ export default {
     return {
       events: null,
       totalEvents: 0,
-      index: null,
-      size: 1
+      index: null
     }
   },
   created() {
     watchEffect(() => {
-      EventService.getEvents(this.size, this.page)
+      EventService.getEvents(this.perPage, this.page)
         .then((response) => {
           this.events = response.data
           this.totalEvents = response.headers['x-total-count']
@@ -69,7 +72,7 @@ export default {
   },
   computed: {
     hasNextPage() {
-      let totalPage = Math.ceil(this.totalEvents / this.size)
+      let totalPage = Math.ceil(this.totalEvents / this.perPage)
       return this.page < totalPage
     }
   }
